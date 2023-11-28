@@ -7,3 +7,7 @@
 /src/tests/__pycache__
 /testing2.pyproj
 /testing2.sln
+/src/analytic/__pycache__
+/tests/__pycache__
+*.user
+/src/__pycache__
