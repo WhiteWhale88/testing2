@@ -1,4 +1,13 @@
-﻿# Описание программы
+﻿[![Automated tests](https://github.com/WhiteWhale88/testing2/actions/workflows/test-action.yml/badge.svg)](https://github.com/WhiteWhale88/testing2/actions/workflows/test-action.yml)
+[![Python application](https://github.com/WhiteWhale88/testing2/actions/workflows/python-app.yml/badge.svg)](https://github.com/WhiteWhale88/testing2/actions/workflows/python-app.yml)
+[![Pylint](https://github.com/WhiteWhale88/testing2/actions/workflows/pylint.yml/badge.svg)](https://github.com/WhiteWhale88/testing2/actions/workflows/pylint.yml)
+[![Coverage Status](https://coveralls.io/repos/github/WhiteWhale88/testing2/badge.svg?branch=main)](https://coveralls.io/github/WhiteWhale88/testing2?branch=main)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=WhiteWhale88_testing2&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=WhiteWhale88_testing2)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=WhiteWhale88_testing2&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=WhiteWhale88_testing2)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=WhiteWhale88_testing2&metric=coverage)](https://sonarcloud.io/summary/new_code?id=WhiteWhale88_testing2)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=WhiteWhale88_testing2&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=WhiteWhale88_testing2)
+
+# Описание программы
 
 Программа считывает файл csv с данными, преобразует их и сравнивает с существующими тремя распределениями: нормальное, экспоненциальное и гамма.
 
