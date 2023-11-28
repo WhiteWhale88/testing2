@@ -12,7 +12,7 @@ class TestAnalysis():
     '''
 
     def test_calculate_statistics(self):
-        ''' тест функции '''
+        ''' тест функции calculate_statistics'''
         arr = np.array([1,2,3,4,5])
         true_dict = {
             "count": 5,
@@ -28,14 +28,14 @@ class TestAnalysis():
 
 
     def test_get_partition(self):
-        ''' тест функции '''
+        ''' тест функции get_partition'''
         arr = np.array([1,2,2,2,3,4,5,6])
         count_inter = 2
         assert analysis.get_partition(arr, count_inter) == [[0, 1], [0.625, 0.375]]
 
 
     def test_number_generation(self):
-        ''' тест функции '''
+        ''' тест функции number_generation'''
         average = 5.0
         var = 3.0
         size = 10
