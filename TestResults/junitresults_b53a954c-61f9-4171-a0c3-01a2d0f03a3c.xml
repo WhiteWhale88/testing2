@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="2" time="0.529" timestamp="2023-11-28T19:08:20.019487" hostname="haidarova"><testcase classname="tests.test_all.TestAnalysis" name="test_calculate_statistics" file="tests\test_all.py" line="18" time="0.001"><failure message="AssertionError: assert {'count': 5, ...an': 3.0, ...} == {'count': 5, ...an': 3.0, ...}&#10;  Omitting 7 identical items, use -vv to show&#10;  Differing items:&#10;  {'max': 5} != {'max': 2}&#10;  Use -v to get more diff">self = &lt;tests.test_all.TestAnalysis object at 0x0000026D017C2CE0&gt;
+
+    def test_calculate_statistics(self):
+        ''' тест функции '''
+        arr = np.array([1,2,3,4,5])
+        true_dict = {
+            "count": 5,
+            "sum": 15,
+            "mean": 3.0,
+            "median": 3.0,
+            "min": 1,
+            "max": 2,
+            "variance": 2.0,
+            "standard_deviation": 1.4142135623730951
+        }
+&gt;       assert analysis.calculate_statistics(arr) == true_dict
+E       AssertionError: assert {'count': 5, ...an': 3.0, ...} == {'count': 5, ...an': 3.0, ...}
+E         Omitting 7 identical items, use -vv to show
+E         Differing items:
+E         {'max': 5} != {'max': 2}
+E         Use -v to get more diff
+
+tests\test_all.py:32: AssertionError</failure><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase><testcase classname="tests.test_all.TestAnalysis" name="test_passing" file="tests\test_all.py" line="14" time="0.000"><system-out>--------------------------------- Captured Log ---------------------------------
+
+--------------------------------- Captured Out ---------------------------------
+
+</system-out><system-err>--------------------------------- Captured Err ---------------------------------
+
+</system-err></testcase></testsuite></testsuites>

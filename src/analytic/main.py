@@ -8,7 +8,7 @@
 
 import dearpygui.dearpygui as dpg
 import numpy as np
-import analysis
+from src.analytic import analysis
 
 
 def add_data_plot(name_gen, str_data, gen_data):
@@ -30,13 +30,13 @@ def analyze_data():
             [float(elem.replace(",", ".").replace('"', "")) for elem in file_data]
         )
         dpg.set_value("text_file", "Успешно открыт и считан")
-    except Exception as e:
-        dpg.set_value("text_file", e)
+    except Exception as text_error:
+        dpg.set_value("text_file", text_error)
 
     # Вычисление статистических характеристик
     dict_params = analysis.calculate_statistics(file_data)
-    for key in dict_params.keys():
-        dpg.set_value(key, dict_params[key])
+    for key, value in dict_params.items():
+        dpg.set_value(key, value)
 
     # Определение количества интервалов
     count_inter = round(5 * np.log10(dict_params["max"] - dict_params["min"]))
