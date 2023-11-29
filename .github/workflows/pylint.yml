@@ -19,4 +19,4 @@ jobs:
         pip install -r requirements.txt
     - name: Analysing the code with pylint
       run: |
-        pylint --init-hook='pytest.main(["--ini=pytest.ini"])' $(git ls-files '*.py')
+        pylint --init-hook='import pytest; pytest.main(["--ini=pytest.ini"])' $(git ls-files '*.py')
