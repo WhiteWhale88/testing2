@@ -11,3 +11,5 @@
 /tests/__pycache__
 *.user
 /src/__pycache__
+/TestResults
+/.coverage

@@ -2,7 +2,6 @@
 Тестирование
 '''
 
-import pytest
 import numpy as np
 from src.analytic import analysis
 
@@ -11,8 +10,7 @@ class TestAnalysis():
     '''
     Тестирование модуля analysis
     '''
-
-    @pytest.mark.calculate_statistics
+    
     def test_calculate_statistics(self):
         ''' тест функции calculate_statistics'''
         arr = np.array([1,2,3,4,5])
@@ -28,16 +26,14 @@ class TestAnalysis():
         }
         assert analysis.calculate_statistics(arr) == true_dict
 
-
-    @pytest.mark.get_partition
+        
     def test_get_partition(self):
         ''' тест функции get_partition'''
         arr = np.array([1,2,2,2,3,4,5,6])
         count_inter = 2
         assert analysis.get_partition(arr, count_inter) == [[0, 1], [0.625, 0.375]]
 
-
-    @pytest.mark.number_generation
+        
     def test_number_generation(self):
         ''' тест функции number_generation'''
         average = 5.0
@@ -53,6 +49,3 @@ class TestAnalysis():
         assert norm.all() == true_norm.all()
         assert exp.all() == true_exp.all()
         assert gamma.all() == true_gamma.all()
-
-#if __name__ == "__main__":
-#    main()
