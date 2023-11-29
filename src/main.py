@@ -6,9 +6,11 @@
  Email: i.nesy.chav@gmail.com
 """
 
+# pragma: cover
+
 import dearpygui.dearpygui as dpg
 import numpy as np
-import analysis
+from analytic import analysis
 
 
 def add_data_plot(name_gen, str_data, gen_data):
