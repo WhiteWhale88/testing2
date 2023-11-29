@@ -6,8 +6,6 @@
 import numpy as np
 from src.analytic import analysis
 from src import main
-#from conftest import file_invalid_data
-#from conftest import file_valid_data
 
 
 class TestMain():
