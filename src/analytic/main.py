@@ -30,8 +30,14 @@ def analyze_data():
             [float(elem.replace(",", ".").replace('"', "")) for elem in file_data]
         )
         dpg.set_value("text_file", "Успешно открыт и считан")
-    except Exception as text_error:
-        dpg.set_value("text_file", text_error)
+    except FileNotFoundError:
+        print("Файл не найден")
+        return
+    except ValueError:
+        print("Данные не могут быть преобразованы в чисал.")
+        return
+    except TypeError:
+        print("Данные файла не являются строками.")
         return
 
     # Вычисление статистических характеристик
