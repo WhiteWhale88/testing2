@@ -8,7 +8,7 @@
 
 import dearpygui.dearpygui as dpg
 import numpy as np
-from src.analytic import analysis
+import analysis
 
 
 def add_data_plot(name_gen, str_data, gen_data):
