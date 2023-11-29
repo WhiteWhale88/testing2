@@ -32,6 +32,7 @@ def analyze_data():
         dpg.set_value("text_file", "Успешно открыт и считан")
     except Exception as text_error:
         dpg.set_value("text_file", text_error)
+        return
 
     # Вычисление статистических характеристик
     dict_params = analysis.calculate_statistics(file_data)
