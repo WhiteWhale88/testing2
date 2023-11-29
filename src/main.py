@@ -13,12 +13,29 @@ import numpy as np
 from analytic import analysis
 
 
-def add_data_plot(name_gen, str_data, gen_data):
+def add_data_plot(name_distrib, str_data, gen_data):
     """
     Отрисовка полученной информации на графиках.
     """
-    dpg.set_value(f"freg_1_{name_gen}", str_data)
-    dpg.set_value(f"freg_2_{name_gen}", gen_data)
+    dpg.set_value("freg_1", list(str_data))
+    dpg.set_value("freg_2", list(gen_data))
+    dpg.set_item_label("freg_2", name_distrib)
+
+
+def get_data_file(path_file):
+    """
+    Чтение данных из файла.
+    """
+    try:
+        file_data = np.genfromtxt(path_file, delimiter="\t", dtype=str)
+        file_data = np.array(
+            [float(elem.replace(",", ".").replace('"', "")) for elem in file_data]
+        )
+    except FileNotFoundError:
+        return np.array([]), "Файл не найден."
+    except (ValueError, TypeError):
+        return np.array([]), "Данные не могут быть преобразованы в числа."
+    return file_data, "Успешно открыт и считан"
 
 
 def analyze_data():
@@ -26,20 +43,9 @@ def analyze_data():
     Анализ данных файла.
     """
     # Чтение файла и преобразование данных
-    try:
-        file_data = np.genfromtxt(dpg.get_value("file"), delimiter="\t", dtype=str)
-        file_data = np.array(
-            [float(elem.replace(",", ".").replace('"', "")) for elem in file_data]
-        )
-        dpg.set_value("text_file", "Успешно открыт и считан")
-    except FileNotFoundError:
-        print("Файл не найден")
-        return
-    except ValueError:
-        print("Данные не могут быть преобразованы в чисал.")
-        return
-    except TypeError:
-        print("Данные файла не являются строками.")
+    file_data, result = get_data_file(dpg.get_value("file"))
+    dpg.set_value("open_result", result)
+    if not np.any(file_data):
         return
 
     # Вычисление статистических характеристик
@@ -52,22 +58,25 @@ def analyze_data():
     dpg.set_value("count_range", count_inter)
 
     # Нахождение относительных частот исходных данных
-    str_data = analysis.get_partition(file_data, count_inter)
+    src_data = analysis.get_partition(file_data, count_inter)
 
-    # Генерация данных
+    # Нахождение относительных частот данных для сравнения
     norm, exp, gamma = analysis.number_generation(
-        dict_params["mean"], dict_params["variance"], dict_params["count"] * 10
+        dict_params["mean"], dict_params["variance"], dict_params["count"] * 10, count_inter
     )
 
-    # Нахождение относительных частот сгенерированных данных
-    norm = analysis.get_partition(norm, count_inter)
-    exp = analysis.get_partition(exp, count_inter)
-    gamma = analysis.get_partition(gamma, count_inter)
-
-    # Отображение графиков
-    add_data_plot("norm", str_data, norm)
-    add_data_plot("exp", str_data, exp)
-    add_data_plot("gamma", str_data, gamma)
+    # Отображение графика
+    index = analysis.compare_distrib(src_data, [norm[1], exp[1], gamma[1]])
+    match index:
+        case 0:
+            add_data_plot("Норм. распр. выборка", src_data, norm)
+            return
+        case 1:
+            add_data_plot("Экс. распр. выборка", src_data, exp)
+            return
+        case 2:
+            add_data_plot("Гамма распр. выборка", src_data, gamma)
+            return
 
 
 def main():
@@ -87,13 +96,13 @@ def main():
             with dpg.group():
                 dpg.add_text("ФАЙЛ С ВЫБОРКОЙ")
                 dpg.add_input_text(
-                    default_value="D:/Python/testing2/data/numbers1.csv",
+                    default_value="../data/numbers1.csv",
                     width=500,
                     tag="file",
                 )
                 dpg.add_button(label="Analyze", callback=analyze_data)
                 dpg.add_text("Сообщение о чтении файла: ")
-                dpg.add_text("", tag="text_file")
+                dpg.add_text("", tag="open_result")
                 dpg.add_text("ПАРАМЕТРЫ ВЫБОРКИ")
                 dpg.add_input_text(
                     label="Количество элементов", width=200, tag="count", readonly=True
@@ -126,73 +135,29 @@ def main():
                 dpg.add_input_text(
                     label="Максимум", width=200, tag="max", readonly=True
                 )
-            with dpg.group():
-                with dpg.plot(
-                    label="Нормальное распределение",
-                    width=500,
-                    height=300,
-                    tag="plot_norm",
-                ):
-                    dpg.add_plot_legend()
-                    dpg.add_plot_axis(dpg.mvXAxis, label="Номер интервала")
-                    dpg.add_plot_axis(dpg.mvYAxis, label="Частота", tag="y_axis_norm")
-                    dpg.add_line_series(
-                        [],
-                        [],
-                        label="Исходная выборка",
-                        tag="freg_1_norm",
-                        parent="y_axis_norm",
-                    )
-                    dpg.add_line_series(
-                        [],
-                        [],
-                        label="Норм. распр. выборка",
-                        tag="freg_2_norm",
-                        parent="y_axis_norm",
-                    )
-                with dpg.plot(
-                    label="Гамма-распределение", width=500, height=300, tag="plot_gamma"
-                ):
-                    dpg.add_plot_legend()
-                    dpg.add_plot_axis(dpg.mvXAxis, label="Номер интервала")
-                    dpg.add_plot_axis(dpg.mvYAxis, label="Частота", tag="y_axis_gamma")
-                    dpg.add_line_series(
-                        [],
-                        [],
-                        label="Исходная выборка",
-                        tag="freg_1_gamma",
-                        parent="y_axis_gamma",
-                    )
-                    dpg.add_line_series(
-                        [],
-                        [],
-                        label="Гамма-распр. выборка",
-                        tag="freg_2_gamma",
-                        parent="y_axis_gamma",
-                    )
-                with dpg.plot(
-                    label="Экспоненциальное распределение",
-                    width=500,
-                    height=300,
-                    tag="plot_exp",
-                ):
-                    dpg.add_plot_legend()
-                    dpg.add_plot_axis(dpg.mvXAxis, label="Номер интервала")
-                    dpg.add_plot_axis(dpg.mvYAxis, label="Частота", tag="y_axis_exp")
-                    dpg.add_line_series(
-                        [],
-                        [],
-                        label="Исходная выборка",
-                        tag="freg_1_exp",
-                        parent="y_axis_exp",
-                    )
-                    dpg.add_line_series(
-                        [],
-                        [],
-                        label="Эксп. распр. выборка",
-                        tag="freg_2_exp",
-                        parent="y_axis_exp",
-                    )
+            with dpg.plot(
+                label="Сравнение",
+                width=500,
+                height=300,
+                tag="plot",
+            ):
+                dpg.add_plot_legend()
+                dpg.add_plot_axis(dpg.mvXAxis, label="Номер интервала")
+                dpg.add_plot_axis(dpg.mvYAxis, label="Частота", tag="y_axis")
+                dpg.add_line_series(
+                    [],
+                    [],
+                    label="Исходная выборка",
+                    tag="freg_1",
+                    parent="y_axis",
+                )
+                dpg.add_line_series(
+                    [],
+                    [],
+                    label="",
+                    tag="freg_2",
+                    parent="y_axis",
+                )
         dpg.bind_font(font)
 
     dpg.create_viewport(title="Generator", width=1200, height=700)

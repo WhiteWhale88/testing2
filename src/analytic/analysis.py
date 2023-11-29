@@ -52,15 +52,15 @@ def get_partition(arr: np.ndarray, count_inter: int):
 
     Возвращает
     ----------
-     : list
+     : np.ndarray
         список со списками номеров интервала и значениями частот
     """
     hist, _ = np.histogram(arr, count_inter)
-    frequency = [h / arr.size for h in hist]
-    return [list(range(count_inter)), frequency]
+    frequency = np.array([h / arr.size for h in hist])
+    return np.array([range(count_inter), frequency])
 
 
-def number_generation(average: float, var: float, size: int):
+def number_generation(average: float, var: float, size: int, count_inter: int):
     """
     Генерирует числа для сравнения исходной выборки,
     подчиненные нормальному, экспоненциальному и
@@ -77,11 +77,11 @@ def number_generation(average: float, var: float, size: int):
 
     Возвращает
     ----------
-    norm_numbers : np.array
+    norm_numbers : np.ndarray
         массив нормально распределенных значений
-    exp_numbers : np.array
+    exp_numbers : np.ndarray
         массив экспоненциально распределенных значений
-    gamma_numbers : np.array
+    gamma_numbers : np.ndarray
         массив гамма распределенных значений
     """
 
@@ -92,12 +92,39 @@ def number_generation(average: float, var: float, size: int):
         sol = sp.solve([eq1, eq2], [x, y])[0]
         return sol[0], sol[1]
 
-    np.random.seed(12)
-
     norm_numbers = np.random.normal(average, np.sqrt(var), size)
+    norm_numbers = get_partition(norm_numbers, count_inter)
+
     exp_numbers = np.random.exponential(average, size)
+    exp_numbers = get_partition(exp_numbers, count_inter)
 
     alpha, beta = decide_system()
     gamma_numbers = np.random.gamma(alpha, beta, size)
+    gamma_numbers = get_partition(gamma_numbers, count_inter)
 
     return norm_numbers, exp_numbers, gamma_numbers
+
+
+def compare_distrib(src: np.ndarray, arr_distrib: list):
+    """
+    Сравнивает значения исходной выборки со значениями
+    предполагаемыми распределениями
+
+    Параметры
+    ----------
+    src : np.ndarray
+        исходная выборка
+    arr_distrib : list
+        список предполагаемых распределений
+
+    Возвращает
+    ----------
+    index : int
+        индекс самого похожего распределения
+    """
+    amount_of_difference = np.array([])
+    for distrib in arr_distrib:
+        amount_of_difference = np.append(amount_of_difference, np.sum(np.abs(src - distrib)))
+
+    index = np.where(amount_of_difference==min(amount_of_difference))[0][0]
+    return index

@@ -2,15 +2,41 @@
 Тестирование
 '''
 
+
 import numpy as np
 from src.analytic import analysis
+from src import main
+#from conftest import file_invalid_data
+#from conftest import file_valid_data
+
+
+class TestMain():
+    '''
+    Тестирование модуля main
+    '''
+    def test_get_data_file_not_found(self):
+        ''' тест функции get_data_file - неверный путь к файлу'''
+        file_data, result = main.get_data_file("numbers1.csv")
+        assert not np.any(file_data)
+        assert result == "Файл не найден."
+
+    def test_get_data_file_invalid_data(self, file_invalid_data):
+        ''' тест функции get_data_file - нечитаемые данные'''
+        file_data, result = main.get_data_file(file_invalid_data)
+        assert not np.any(file_data)
+        assert result == "Данные не могут быть преобразованы в числа."
+
+    def test_get_data_file_valid_data(self, file_valid_data):
+        ''' тест функции get_data_file - верный путь к файлу и данные'''
+        file_data, result = main.get_data_file(file_valid_data)
+        assert file_data.all() == np.array([234.0, 67.99]).all()
+        assert result == "Успешно открыт и считан"
 
 
 class TestAnalysis():
     '''
     Тестирование модуля analysis
     '''
-    
     def test_calculate_statistics(self):
         ''' тест функции calculate_statistics'''
         arr = np.array([1,2,3,4,5])
@@ -26,26 +52,38 @@ class TestAnalysis():
         }
         assert analysis.calculate_statistics(arr) == true_dict
 
-        
+
     def test_get_partition(self):
         ''' тест функции get_partition'''
         arr = np.array([1,2,2,2,3,4,5,6])
         count_inter = 2
-        assert analysis.get_partition(arr, count_inter) == [[0, 1], [0.625, 0.375]]
+        true_result = np.array([[0, 1],np.array([0.625, 0.375])])
+        assert analysis.get_partition(arr, count_inter).all() == true_result.all()
 
-        
+
     def test_number_generation(self):
         ''' тест функции number_generation'''
         average = 5.0
         var = 3.0
-        size = 10
-        true_norm = np.array([5.81923549, 3.81973576, 5.41991753, 2.05423947, 6.30448165,
-                              2.34178466, 5.00888036, 4.79175957, 3.60226639, 9.9741371 ])
-        true_exp = np.array([7.30798162, 0.87603514, 7.23150544, 0.10514687, 0.72634391,
-                             0.61803554, 1.85457632, 5.56537148, 3.18600652, 8.46867302])
-        true_gamma = np.array([6.7314887 , 3.41014754, 5.70307387, 5.03950646, 3.09540968,
-                               2.4742548 , 2.36004233, 3.9579512 , 4.73376682, 4.38187534])
-        norm, exp, gamma = analysis.number_generation(average, var, size)
+        size = 100
+        count_inter = 5
+        true_norm = np.array([[0, 1, 2, 3, 4, ],
+                              np.array([0.04, 0.21, 0.47, 0.24, 0.04])])
+        true_exp = np.array([[0, 1, 2, 3, 4, ],
+                              np.array([0.77, 0.13, 0.07, 0.02, 0.01])])
+        true_gamma = np.array([[0, 1, 2, 3, 4, ],
+                              np.array([0.17, 0.46, 0.27, 0.07, 0.03])])
+
+        np.random.seed(12)
+        norm, exp, gamma = analysis.number_generation(average, var, size, count_inter)
+
         assert norm.all() == true_norm.all()
         assert exp.all() == true_exp.all()
         assert gamma.all() == true_gamma.all()
+
+
+    def test_compare_distrib(self):
+        ''' тест функции compare_distrib'''
+        arr = np.array([1,2,3])
+        lst = [np.array([0.5,2.3,1.5]), np.array([0,-5,9])]
+        assert analysis.compare_distrib(arr, lst) == 0
