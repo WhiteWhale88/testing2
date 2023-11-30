@@ -6,19 +6,17 @@
  Email: i.nesy.chav@gmail.com
 """
 
-# pragma: cover
-
 import dearpygui.dearpygui as dpg
 import numpy as np
-from analytic import analysis
+from analysis import sample_characteristics as sc
 
 
-def add_data_plot(name_distrib, str_data, gen_data):
+def add_data_plot(name_distrib, x_data, str_data, gen_data):
     """
-    Отрисовка полученной информации на графиках.
+    Отрисовка полученной информации на график.
     """
-    dpg.set_value("freg_1", list(str_data))
-    dpg.set_value("freg_2", list(gen_data))
+    dpg.set_value("freg_1", [x_data, list(str_data)])
+    dpg.set_value("freg_2", [x_data, list(gen_data)])
     dpg.set_item_label("freg_2", name_distrib)
 
 
@@ -26,6 +24,8 @@ def get_data_file(path_file):
     """
     Чтение данных из файла.
     """
+    if "\\" in path_file:
+        path_file.replace("\\", "/")
     try:
         file_data = np.genfromtxt(path_file, delimiter="\t", dtype=str)
         file_data = np.array(
@@ -42,6 +42,7 @@ def analyze_data():
     """
     Анализ данных файла.
     """
+
     # Чтение файла и преобразование данных
     file_data, result = get_data_file(dpg.get_value("file"))
     dpg.set_value("open_result", result)
@@ -49,34 +50,30 @@ def analyze_data():
         return
 
     # Вычисление статистических характеристик
-    dict_params = analysis.calculate_statistics(file_data)
+    dict_params = sc.calculate_statistics(file_data)
     for key, value in dict_params.items():
         dpg.set_value(key, value)
 
     # Определение количества интервалов
     count_inter = round(5 * np.log10(dict_params["max"] - dict_params["min"]))
+    x_data = list(range(count_inter))
     dpg.set_value("count_range", count_inter)
 
     # Нахождение относительных частот исходных данных
-    src_data = analysis.get_partition(file_data, count_inter)
+    src_data, edges = sc.break_array(file_data, count_inter)
 
     # Нахождение относительных частот данных для сравнения
-    norm, exp, gamma = analysis.number_generation(
-        dict_params["mean"], dict_params["variance"], dict_params["count"] * 10, count_inter
+    norm, exp, gamma = sc.number_generation(
+        dict_params["mean"], dict_params["variance"], edges
     )
 
     # Отображение графика
-    index = analysis.compare_distrib(src_data, [norm[1], exp[1], gamma[1]])
-    match index:
-        case 0:
-            add_data_plot("Норм. распр. выборка", src_data, norm)
-            return
-        case 1:
-            add_data_plot("Экс. распр. выборка", src_data, exp)
-            return
-        case 2:
-            add_data_plot("Гамма распр. выборка", src_data, gamma)
-            return
+    name_distrib = ["Норм. распр. выборка",
+                    "Экс. распр. выборка",
+                    "Гамма распр. выборка"]
+    value_distrib = [norm, exp, gamma]
+    index = sc.compare_distrib(src_data, value_distrib)
+    add_data_plot(name_distrib[index], x_data, src_data, value_distrib[index])
 
 
 def main():
@@ -96,11 +93,11 @@ def main():
             with dpg.group():
                 dpg.add_text("ФАЙЛ С ВЫБОРКОЙ")
                 dpg.add_input_text(
-                    default_value="../data/numbers1.csv",
+                    default_value="D:/Python/testing2/data/numbers1.csv",
                     width=500,
                     tag="file",
                 )
-                dpg.add_button(label="Analyze", callback=analyze_data)
+                dpg.add_button(label="Анализировать", callback=analyze_data)
                 dpg.add_text("Сообщение о чтении файла: ")
                 dpg.add_text("", tag="open_result")
                 dpg.add_text("ПАРАМЕТРЫ ВЫБОРКИ")
@@ -137,8 +134,8 @@ def main():
                 )
             with dpg.plot(
                 label="Сравнение",
-                width=500,
-                height=300,
+                width=700,
+                height=500,
                 tag="plot",
             ):
                 dpg.add_plot_legend()

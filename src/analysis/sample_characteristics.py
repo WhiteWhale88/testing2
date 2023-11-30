@@ -1,5 +1,5 @@
 ﻿"""
- Анализ данных
+ Анализ набора данных
 
  (C) 2023 Alisa Haidarova, PetrGU, Petrozavodsk, Russia
  License: GNU General Public License (GPL)
@@ -8,7 +8,7 @@
 
 import sympy as sp
 import numpy as np
-
+import distribution_generator as dg
 
 def calculate_statistics(arr: np.ndarray):
     """
@@ -34,14 +34,14 @@ def calculate_statistics(arr: np.ndarray):
         "min": arr.min(),
         "max": arr.max(),
         "variance": arr.var(),
-        "standard_deviation": arr.std()
+        "standard_deviation": arr.std(),
     }
     return statistics_dict
 
 
-def get_partition(arr: np.ndarray, count_inter: int):
+def break_array(arr: np.ndarray, count_inter: int):
     """
-    Разбивает выборку
+    Определяет относительную частоту выборки
 
     Параметры
     ----------
@@ -53,18 +53,17 @@ def get_partition(arr: np.ndarray, count_inter: int):
     Возвращает
     ----------
      : np.ndarray
-        список со списками номеров интервала и значениями частот
+        массив частот
+    bin_edges[1:] : np.ndarray
+        масссив верхних границ частот
     """
-    hist, _ = np.histogram(arr, count_inter)
-    frequency = np.array([h / arr.size for h in hist])
-    return np.array([range(count_inter), frequency])
+    hist, bin_edges = np.histogram(arr, count_inter)
+    return hist / arr.size, bin_edges[1:]
 
 
-def number_generation(average: float, var: float, size: int, count_inter: int):
+def number_generation(average: float, var: float, edges: np.ndarray):
     """
-    Генерирует числа для сравнения исходной выборки,
-    подчиненные нормальному, экспоненциальному и
-    гамма распределениям
+    Генерирует распределения для определения исходной выборки
 
     Параметры
     ----------
@@ -72,8 +71,8 @@ def number_generation(average: float, var: float, size: int, count_inter: int):
         среднее выборочной исходной выборки
     var : float
         дисперсия исходной выборки
-    size : int
-        размер исходной выборки
+    edges: np.ndarray
+        границы разбиения исходной выборки
 
     Возвращает
     ----------
@@ -84,23 +83,13 @@ def number_generation(average: float, var: float, size: int, count_inter: int):
     gamma_numbers : np.ndarray
         массив гамма распределенных значений
     """
+    norm_numbers = dg.norm(average, np.sqrt(var), edges)
 
-    def decide_system():
-        x, y = sp.symbols('x y')
-        eq1 = x * y - average
-        eq2 = x * y**2 - var
-        sol = sp.solve([eq1, eq2], [x, y])[0]
-        return sol[0], sol[1]
+    exp_numbers = dg.expon(1 / average, edges)
 
-    norm_numbers = np.random.normal(average, np.sqrt(var), size)
-    norm_numbers = get_partition(norm_numbers, count_inter)
-
-    exp_numbers = np.random.exponential(average, size)
-    exp_numbers = get_partition(exp_numbers, count_inter)
-
-    alpha, beta = decide_system()
-    gamma_numbers = np.random.gamma(alpha, beta, size)
-    gamma_numbers = get_partition(gamma_numbers, count_inter)
+    x, y = sp.symbols("x y")
+    params = sp.solve([x * y - average, x * y**2 - var], [x, y])[0]
+    gamma_numbers = dg.gamma(params[0], params[1], edges)
 
     return norm_numbers, exp_numbers, gamma_numbers
 
@@ -108,7 +97,7 @@ def number_generation(average: float, var: float, size: int, count_inter: int):
 def compare_distrib(src: np.ndarray, arr_distrib: list):
     """
     Сравнивает значения исходной выборки со значениями
-    предполагаемыми распределениями
+    предполагаемых распределений
 
     Параметры
     ----------
@@ -122,9 +111,12 @@ def compare_distrib(src: np.ndarray, arr_distrib: list):
     index : int
         индекс самого похожего распределения
     """
+
     amount_of_difference = np.array([])
     for distrib in arr_distrib:
-        amount_of_difference = np.append(amount_of_difference, np.sum(np.abs(src - distrib)))
+        amount_of_difference = np.append(
+            amount_of_difference, np.sum(np.abs(src - distrib))
+        )
 
-    index = np.where(amount_of_difference==min(amount_of_difference))[0][0]
+    index = np.where(amount_of_difference == min(amount_of_difference))[0][0]
     return index
