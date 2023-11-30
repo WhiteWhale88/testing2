@@ -12,3 +12,4 @@
 *.user
 /src/__pycache__
 /TestResults
+/src/analysis/__pycache__
