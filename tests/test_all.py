@@ -124,12 +124,12 @@ class TestDistributionGenerator:
         result = dg.expon(lambd, edges)
         assert result[0] == pytest.approx(0.645656306225796, abs=1e-6)
         assert result[1] == pytest.approx(0.354343693774204, abs=1e-6)
-        
+
 
     def test_gamma(self):
         """тест функции gamma"""
         alpha = 8.33333333333333
-        beta = 0.6
+        beta =0.6
         edges = [3., 6.]
         result = dg.gamma(alpha, beta, edges)
         assert result[0] == pytest.approx(0.479242107149368, abs=1e-6)
