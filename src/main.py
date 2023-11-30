@@ -24,8 +24,6 @@ def get_data_file(path_file):
     """
     Чтение данных из файла.
     """
-    if "\\" in path_file:
-        path_file.replace("\\", "/")
     try:
         file_data = np.genfromtxt(path_file, delimiter="\t", dtype=str)
         file_data = np.array(

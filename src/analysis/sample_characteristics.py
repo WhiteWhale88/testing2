@@ -8,7 +8,7 @@
 
 import sympy as sp
 import numpy as np
-import distribution_generator as dg
+from analysis import distribution_generator as dg
 
 def calculate_statistics(arr: np.ndarray):
     """
