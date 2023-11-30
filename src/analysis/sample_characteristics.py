@@ -118,5 +118,5 @@ def compare_distrib(src: np.ndarray, arr_distrib: list):
             amount_of_difference, np.sum(np.abs(src - distrib))
         )
 
-    index = np.where(amount_of_difference == min(amount_of_difference))[0][0]
+    index = np.nonzero(amount_of_difference == min(amount_of_difference))[0][0]
     return index
