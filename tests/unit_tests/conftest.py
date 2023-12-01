@@ -14,7 +14,7 @@ def file_valid_data(tmp_path):
 @pytest.fixture
 def file_invalid_data(tmp_path):
     '''Файл с нечитаемыми данными'''
-    file_path = tmp_path / "test_file.txt"
+    file_path = tmp_path / "test_file2.txt"
     with open(file_path, "w", encoding="UTF-8") as f:
         f.write("invalid")
     return file_path
