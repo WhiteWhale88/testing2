@@ -10,7 +10,6 @@ import dearpygui.dearpygui as dpg
 import numpy as np
 from analysis import sample_characteristics as sc
 
-
 def get_data_file(path_file):
     """
     Чтение данных из файла.
@@ -81,7 +80,7 @@ def get_analysis(file_path):
     dpg.set_value("freg_2", [x_data, list(value_distrib)])
     dpg.set_item_label("freg_2", name_distrib)
 
-
+    
 def main():
     """
     Реализация интерфейса.
