@@ -6,6 +6,7 @@
  Email: i.nesy.chav@gmail.com
 """
 
+
 import dearpygui.dearpygui as dpg
 import numpy as np
 from analysis import sample_characteristics as sc
@@ -53,8 +54,7 @@ def analysis_data(arr: np.ndarray):
     return stats, count_inter, src_data, name_distrib[index], value_distrib[index]
 
 
-# pragma: no cover
-def get_analysis(file_path):
+def get_analysis(file_path):    # pragma: no cover
     """
     Анализ файла и отображение результатов.
     """
@@ -82,8 +82,7 @@ def get_analysis(file_path):
     dpg.set_item_label("freg_2", name_distrib)
 
 
-# pragma: no cover
-def main():
+def main():    # pragma: no cover
     """
     Реализация интерфейса.
     """
@@ -173,6 +172,5 @@ def main():
     dpg.destroy_context()
 
 
-# pragma: no cover
-if __name__ == "__main__":
+if __name__ == "__main__":    # pragma: no cover
     main()
