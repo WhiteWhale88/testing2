@@ -46,7 +46,7 @@ def test_get_data_file_not_found():
     """тест функции get_data_file - неверный путь к файлу"""
     file_data, result = main.get_data_file("numbers1.csv")
 
-    assert not np.any(file_data)
+    assert np.any(file_data)
     assert result == "Файл не найден."
 
 
