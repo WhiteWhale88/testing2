@@ -2,10 +2,8 @@
 Тестирование модуля main
 """
 
-import pytest
 import numpy as np
 from src import main
-
 
 def test_get_data_file_not_found():
     """тест функции get_data_file - неверный путь к файлу"""

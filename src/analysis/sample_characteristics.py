@@ -34,7 +34,7 @@ def calculate_statistics(arr: np.ndarray):
         "min": arr.min(),
         "max": arr.max(),
         "variance": arr.var(),
-        "standard_deviation": arr.std(),
+        "scale": arr.std(),
     }
     return statistics_dict
 

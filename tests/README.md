@@ -161,7 +161,6 @@
 	alpha = 8.33333333333333
     beta = 0.6
     edges = [3., 6.]
-
 	```
 	+ Ожидаемы результат:
 	```
@@ -173,16 +172,66 @@
 * Тест И1 (позитивный)
 	+ Модули: distribution_generator, sample_characteristics
 	+ Описание:
-		1. Генерация 3 выборок
-		2. Сравнение распределений
+		1. Получение статистик выборки (sc.calculate_statistics)
+		2. Получение границ выборки (sc.break_array)
+		3. Генерация выборки нормального распределение (dg.norm)
 	+ Входные данные:
-		- distribution_generator.norm
-		```
-		average = 5.
-		scale = sp.sqrt(3)
-		edges = [1., 2., 3., 4., 5., 6., 7., 8., 9., 10.]
-		```
-		- sample_characteristics.compare_distrib
-		```
-		distribution_generator.norm
-		```
+	```
+	arr = np.array([1, 2, 3, 4, 5])
+	count_inter = 2
+	```
+	+ Ожидаемый результат
+	```
+	np.array([0.731058578630005, 0.268941421369995])
+	```
+
+* Тест И2 (позитивный)
+	+ Модули: distribution_generator, sample_characteristics
+	+ Описание:
+		1. Генерация выборки нормального распределение (sc.number_generation)
+		2. Генерация выборки нормального распределение (dg.norm)
+	+ Входные данные:
+	```
+	average = 3.
+    var = 2.
+    edges = [3., 5.]
+	```
+	+ Ожидаемый результат
+	```
+	Сгенерированные выборки равны.
+	```
+
+* Тест И3 (позитивный)
+	+ Модули: distribution_generator, sample_characteristics
+	+ Описание:
+		1. Генерация выборки экспоненциального распределение (sc.number_generation)
+		2. Генерация выборки экспоненциального распределение (dg.expon)
+	+ Входные данные:
+	```
+	average = 3.
+    var = 2.
+    lambd = 1 / average
+    edges = [3., 5.]
+	```
+	+ Ожидаемый результат
+	```
+	Сгенерированные выборки равны.
+	```
+
+* Тест И4 (позитивный)
+	+ Модули: distribution_generator, sample_characteristics
+	+ Описание:
+		1. Генерация выборки гамма распределение (sc.number_generation)
+		2. Генерация выборки гамма распределение (dg.gamma)
+	+ Входные данные:
+	```
+	alpha = 3.
+    beta = 0.5
+    average = alpha * beta
+    var = alpha * beta**2
+    edges = [3., 5.]
+	```
+	+ Ожидаемый результат
+	```
+	Сгенерированные выборки равны.
+	```

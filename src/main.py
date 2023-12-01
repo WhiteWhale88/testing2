@@ -123,7 +123,7 @@ def main():
                 dpg.add_input_text(
                     label="Среднеквадратичное отклонение",
                     width=200,
-                    tag="standard_deviation",
+                    tag="scale",
                     readonly=True,
                 )
                 dpg.add_input_text(label="Минимум", width=200, tag="min", readonly=True)

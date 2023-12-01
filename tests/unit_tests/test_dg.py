@@ -6,7 +6,6 @@ import pytest
 import sympy as sp
 from src.analysis import distribution_generator as dg
 
-
 def test_norm():
     """тест функции norm"""
     average = 5.

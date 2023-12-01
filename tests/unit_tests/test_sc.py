@@ -17,7 +17,7 @@ def test_calculate_statistics():
         "min": 1,
         "max": 5,
         "variance": 2.0,
-        "standard_deviation": 1.4142135623730951,
+        "scale": 1.4142135623730951,
     }
 
     assert sc.calculate_statistics(arr) == true_dict
