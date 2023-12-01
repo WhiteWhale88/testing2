@@ -5,8 +5,6 @@
 /.vs
 /testing2.pyproj
 /testing2.sln
-/src/__pycache__
-/src/analysis/__pycache__
-/tests/__pycache__
+*__pycache__
 *.user
 /TestResults

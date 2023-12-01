@@ -171,3 +171,18 @@
 ## Интеграционное тестирование
 
 * Тест И1 (позитивный)
+	+ Модули: distribution_generator, sample_characteristics
+	+ Описание:
+		1. Генерация 3 выборок
+		2. Сравнение распределений
+	+ Входные данные:
+		- distribution_generator.norm
+		```
+		average = 5.
+		scale = sp.sqrt(3)
+		edges = [1., 2., 3., 4., 5., 6., 7., 8., 9., 10.]
+		```
+		- sample_characteristics.compare_distrib
+		```
+		distribution_generator.norm
+		```
