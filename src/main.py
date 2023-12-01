@@ -53,6 +53,7 @@ def analysis_data(arr: np.ndarray):
     return stats, count_inter, src_data, name_distrib[index], value_distrib[index]
 
 
+# pragma: no cover
 def get_analysis(file_path):
     """
     Анализ файла и отображение результатов.
@@ -81,6 +82,7 @@ def get_analysis(file_path):
     dpg.set_item_label("freg_2", name_distrib)
 
 
+# pragma: no cover
 def main():
     """
     Реализация интерфейса.
@@ -171,5 +173,6 @@ def main():
     dpg.destroy_context()
 
 
+# pragma: no cover
 if __name__ == "__main__":
     main()
