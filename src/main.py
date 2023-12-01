@@ -99,7 +99,7 @@ def main():
             with dpg.group():
                 dpg.add_text("ФАЙЛ С ВЫБОРКОЙ")
                 dpg.add_input_text(
-                    default_value="D:/Python/testing2/data/numbers1.csv",
+                    default_value="",
                     width=500,
                     tag="file",
                 )
