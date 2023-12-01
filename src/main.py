@@ -11,15 +11,6 @@ import numpy as np
 from analysis import sample_characteristics as sc
 
 
-def add_data_plot(name_distrib, x_data, str_data, gen_data):
-    """
-    Отрисовка полученной информации на график.
-    """
-    dpg.set_value("freg_1", [x_data, list(str_data)])
-    dpg.set_value("freg_2", [x_data, list(gen_data)])
-    dpg.set_item_label("freg_2", name_distrib)
-
-
 def get_data_file(path_file):
     """
     Чтение данных из файла.
@@ -36,42 +27,59 @@ def get_data_file(path_file):
     return file_data, "Успешно открыт и считан"
 
 
-def analyze_data():
+def analysis_data(arr: np.ndarray):
     """
-    Анализ данных файла.
+    Анализ данных.
     """
-
-    # Чтение файла и преобразование данных
-    file_data, result = get_data_file(dpg.get_value("file"))
-    dpg.set_value("open_result", result)
-    if not np.any(file_data):
-        return
 
     # Вычисление статистических характеристик
-    dict_params = sc.calculate_statistics(file_data)
-    for key, value in dict_params.items():
-        dpg.set_value(key, value)
-
-    # Определение количества интервалов
-    count_inter = round(5 * np.log10(dict_params["max"] - dict_params["min"]))
-    x_data = list(range(count_inter))
-    dpg.set_value("count_range", count_inter)
+    stats = sc.calculate_statistics(arr)
 
     # Нахождение относительных частот исходных данных
-    src_data, edges = sc.break_array(file_data, count_inter)
+    count_inter = round(5 * np.log10(stats["max"] - stats["min"]))
+    src_data, edges = sc.break_array(arr, count_inter)
 
     # Нахождение относительных частот данных для сравнения
     norm, exp, gamma = sc.number_generation(
-        dict_params["mean"], dict_params["variance"], edges
+        stats["mean"], stats["variance"], edges
     )
 
-    # Отображение графика
+    # Определение подходящего распределения
     name_distrib = ["Норм. распр. выборка",
                     "Экс. распр. выборка",
                     "Гамма распр. выборка"]
     value_distrib = [norm, exp, gamma]
     index = sc.compare_distrib(src_data, value_distrib)
-    add_data_plot(name_distrib[index], x_data, src_data, value_distrib[index])
+
+    return stats, count_inter, src_data, name_distrib[index], value_distrib[index]
+
+
+def get_analysis(file_path):
+    """
+    Анализ файла и отображение результатов.
+    """
+
+    # Чтение файла и преобразование данных
+    file_data, result = get_data_file(file_path)
+    dpg.set_value("open_result", result)
+    if not np.any(file_data):
+        return
+
+    # Анализ данных файла
+    stats, count_inter, src_data, name_distrib, value_distrib = analysis_data(file_data)
+
+    # Отображение статистики
+    for key, value in stats.items():
+        dpg.set_value(key, value)
+
+    # Отображение количества интервалов
+    dpg.set_value("count_range", count_inter)
+
+    # Отображение графика
+    x_data = list(range(count_inter))
+    dpg.set_value("freg_1", [x_data, list(src_data)])
+    dpg.set_value("freg_2", [x_data, list(value_distrib)])
+    dpg.set_item_label("freg_2", name_distrib)
 
 
 def main():
@@ -95,7 +103,8 @@ def main():
                     width=500,
                     tag="file",
                 )
-                dpg.add_button(label="Анализировать", callback=analyze_data)
+                dpg.add_button(label="Анализировать",
+                               callback=lambda: get_analysis(dpg.get_value("file")))
                 dpg.add_text("Сообщение о чтении файла: ")
                 dpg.add_text("", tag="open_result")
                 dpg.add_text("ПАРАМЕТРЫ ВЫБОРКИ")
